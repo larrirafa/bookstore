@@ -7,7 +7,7 @@ class CategoryModelTest(TestCase):
         self.category = Category.objects.create(
             title="Eletrônicos",
             slug="eletronicos",
-            description="Produtos eletrônicos em geral"
+            description="Produtos eletrônicos em geral",
         )
 
     def test_category_creation(self):
@@ -19,15 +19,13 @@ class CategoryModelTest(TestCase):
 class ProductModelTest(TestCase):
     def setUp(self):
         self.category = Category.objects.create(
-            title="Livros",
-            slug="livros",
-            description="Categoria de livros"
+            title="Livros", slug="livros", description="Categoria de livros"
         )
         self.product = Product.objects.create(
             title="Livro Django",
             description="Aprenda Django com exemplos práticos",
             price=100,
-            active=True
+            active=True,
         )
         self.product.category.add(self.category)
 

@@ -6,9 +6,9 @@ from product.serializers.product_serializer import ProductSerializer
 
 
 class ProductViewSet(ModelViewSet):
-    authentication_classes = []       
-    permission_classes = [AllowAny]    
+    authentication_classes = []
+    permission_classes = [AllowAny]
     serializer_class = ProductSerializer
 
     def get_queryset(self):
-        return Product.objects.all().order_by('id')
+        return Product.objects.all().order_by("id")
