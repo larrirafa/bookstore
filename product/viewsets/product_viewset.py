@@ -6,7 +6,6 @@ from product.serializers.product_serializer import ProductSerializer
 
 
 class ProductViewSet(ModelViewSet):
-    authentication_classes = []
     permission_classes = [AllowAny]
     serializer_class = ProductSerializer
 

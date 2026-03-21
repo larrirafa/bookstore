@@ -59,5 +59,8 @@ COPY . /app/
 
 EXPOSE 8000
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+COPY . /app/
+RUN ls -la /opt/pysetup/.venv/bin/python && ls -la /app/manage.py
+
+CMD /opt/pysetup/.venv/bin/python manage.py runserver 0.0.0.0:8000
 #
