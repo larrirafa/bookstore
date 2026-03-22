@@ -7,7 +7,7 @@ ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     \
     # pip
-    PIP_NO_CACHE_DIR=off \
+    PIP_NO_CACHE_DIR=on \
     PIP_DISABLE_PIP_VERSION_CHECK=on \
     PIP_DEFAULT_TIMEOUT=100 \
     \
@@ -36,31 +36,31 @@ RUN apt-get update \
         # deps for installing poetry
         curl \
         # deps for building python deps
-        build-essential
+        build-essential \
+        # deps for postgres
+        libpq-dev \
+        gcc \
+    && rm -rf /var/lib/apt/lists/*
 
 # install poetry - respects $POETRY_VERSION & $POETRY_HOME
 RUN curl -sSL https://install.python-poetry.org | python3 -
 
-# install postgres dependencies 
-RUN apt-get update \
-    && apt-get -y install libpq-dev gcc \
-    && pip install psycopg2
+# install postgres dependencies
+RUN pip install --no-cache-dir psycopg2-binary
 
 # copy project requirement files here to ensure they will be cached.
 WORKDIR $PYSETUP_PATH
 COPY poetry.lock pyproject.toml ./
 
 # quicker install as runtime deps are already installed
-RUN  poetry install --no-root
+RUN poetry install --no-root --no-cache
 
 WORKDIR /app
 
 COPY . /app/
 
-EXPOSE 8000
-
-COPY . /app/
 RUN ls -la /opt/pysetup/.venv/bin/python && ls -la /app/manage.py
 
-CMD /opt/pysetup/.venv/bin/python manage.py runserver 0.0.0.0:8000
-#
+EXPOSE 8000
+
+CMD ["/opt/pysetup/.venv/bin/python", "manage.py", "runserver", "0.0.0.0:8000"]
