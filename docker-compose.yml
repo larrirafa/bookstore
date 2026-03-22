@@ -2,26 +2,30 @@ version: '3.9'
 
 services:
   db:
-    image: postgres:16.0-alpine
+    image: postgres:17.0-alpine
     ports:
       - 5432:5432
     volumes:
       - postgres_data:/var/lib/postgresql/data/
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
       - POSTGRES_USER=bookstore_dev
       - POSTGRES_PASSWORD=bookstore_dev
       - POSTGRES_DB=bookstore_dev_db
+      - POSTGRES_DB=bookstore_dev_db
+
   web:
     build: .
     command: /opt/pysetup/.venv/bin/python manage.py runserver 0.0.0.0:8000
     volumes:
-      - .:/app
+      - ./app:/app
     ports:
       - 8000:8000
     env_file:
-      - ./env.dev
+      - ./.env.dev
     depends_on:
       - db
 
 volumes:
   postgres_data:
+    driver: local
