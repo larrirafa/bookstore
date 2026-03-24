@@ -88,7 +88,7 @@ else:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": os.getenv("SQL_DATABASE", "bookstore_dev_db"),
+            "NAME": os.getenv("", "bookstore_dev_db"),
             "USER": os.getenv("SQL_USER", "bookstore_dev"),
             "PASSWORD": os.getenv("SQL_PASSWORD", "bookstore_dev"),
             "HOST": os.getenv("SQL_HOST", "db"),  # 👈 chave aqui
