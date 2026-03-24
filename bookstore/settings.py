@@ -14,7 +14,8 @@ DEBUG = os.environ.get("DEBUG", "False") == "True"
 
 #ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost", "https://ebac-test-to-delete-8c90eaa76bdb.herokuapp.com/").split(" ")
 # Use apenas uma string com os nomes separados por espaço como padrão
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost 127.0.0.1 ebac-test-to-delete-8c90eaa76bdb.herokuapp.com").split(" ")
+#ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost 127.0.0.1 ebac-test-to-delete-8c90eaa76bdb.herokuapp.com").split(" ")
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "ebac-test-to-delete-8c90eaa76bdb.herokuapp.com localhost 127.0.0.1").split(" ")
 
 # APPLICATIONS
 INSTALLED_APPS = [
