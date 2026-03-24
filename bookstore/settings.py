@@ -12,7 +12,7 @@ SECRET_KEY = os.environ.get(
 
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost").split(" ")
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost", "https://ebac-test-to-delete-8c90eaa76bdb.herokuapp.com/").split(" ")
 
 # APPLICATIONS
 INSTALLED_APPS = [
