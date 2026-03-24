@@ -1,0 +1,26 @@
+name: Push Container to Heroku
+
+on:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  heroku-container-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3 # Atualizado para v3 (mais estável em 2026)
+
+      - name: Log in to Heroku Container Registry
+        run: heroku container:login
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+
+      - name: Build and Push Container
+        # Substituímos o git push pelo fluxo de container que você já estava usando no terminal
+        run: |
+          heroku container:push web -a ${{ secrets.HEROKU_APP_NAME }}
+          heroku container:release web -a ${{ secrets.HEROKU_APP_NAME }}
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}

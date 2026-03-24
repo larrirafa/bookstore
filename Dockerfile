@@ -63,4 +63,5 @@ RUN ls -la /opt/pysetup/.venv/bin/python && ls -la /app/manage.py
 
 EXPOSE 8000
 
-CMD ["/opt/pysetup/.venv/bin/gunicorn", "bookstore.wsgi:application", "--bind", "0.0.0.0:8000"]
+#CMD ["/opt/pysetup/.venv/bin/gunicorn", "bookstore.wsgi:application", "--bind", "0.0.0.0:8000"]
+CMD /opt/pysetup/.venv/bin/gunicorn bookstore.wsgi:application --bind 0.0.0.0:$PORT
