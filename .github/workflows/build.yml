@@ -11,6 +11,21 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    services:
+      db:
+        image: postgres:15
+        env:
+          POSTGRES_USER: bookstore_dev
+          POSTGRES_PASSWORD: bookstore_dev
+          POSTGRES_DB: bookstore_dev_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     env:
       DEBUG: 1
       SECRET_KEY: foo
@@ -20,7 +35,7 @@ jobs:
       SQL_DATABASE: bookstore_dev_db
       SQL_USER: bookstore_dev
       SQL_PASSWORD: bookstore_dev
-      SQL_HOST: db
+      SQL_HOST: localhost    # 👈 mudou de "db" para "localhost"
       SQL_PORT: 5432
 
     steps:
@@ -36,6 +51,7 @@ jobs:
         python -m ensurepip
         python -m pip install --upgrade pip
         python -m pip install --upgrade poetry
+
     - name: View poetry --help
       run: poetry --help
 
