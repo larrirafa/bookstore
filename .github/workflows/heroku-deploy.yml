@@ -10,17 +10,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v3 # Atualizado para v3 (mais estável em 2026)
+        uses: actions/checkout@v3
 
-      - name: Log in to Heroku Container Registry
-        run: heroku container:login
+      # Esta Action instala o Heroku CLI e faz o login automaticamente
+      - name: Login to Heroku
+        uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_email: ${{ secrets.HEROKU_EMAIL }}
+          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+          just_login: true # Só queremos o login, o resto faremos via Docker
+
+      - name: Build and Push Container
+        run: |
+          # 1. Login no registro de container usando o Docker diretamente
+          echo ${{ secrets.HEROKU_API_KEY }} | docker login --username=_ --password-stdin registry.heroku.com
+          
+          # 2. Build da imagem
+          docker build -t registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web .
+          
+          # 3. Push para o Heroku
+          docker push registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web
+          
+          # 4. Release (Ativa a imagem)
+          heroku container:release web -a ${{ secrets.HEROKU_APP_NAME }}
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
 
-      - name: Build and Push Container
-        # Substituímos o git push pelo fluxo de container que você já estava usando no terminal
-        run: |
-          heroku container:push web -a ${{ secrets.HEROKU_APP_NAME }}
-          heroku container:release web -a ${{ secrets.HEROKU_APP_NAME }}
+      - name: Run Database Migrations
+        run: heroku run python manage.py migrate -a ${{ secrets.HEROKU_APP_NAME }}
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
