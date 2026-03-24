@@ -129,9 +129,11 @@ REST_FRAMEWORK = {
 }
 
 
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
+#STATICFILES_DIRS = [
+# BASE_DIR / "static",
+#]
+
+STATICFILES_DIRS = []
 
 # DEBUG TOOLBAR
 INTERNAL_IPS = ["127.0.0.1"]
