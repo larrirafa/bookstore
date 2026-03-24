@@ -12,7 +12,6 @@ services:
       - POSTGRES_USER=bookstore_dev
       - POSTGRES_PASSWORD=bookstore_dev
       - POSTGRES_DB=bookstore_dev_db
-      - POSTGRES_DB=bookstore_dev_db
 
   web:
     build: .

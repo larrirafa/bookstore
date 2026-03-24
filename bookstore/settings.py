@@ -68,15 +68,31 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "bookstore.wsgi.application"
 
-# ✅ DATABASE (HEROKU READY)
-DATABASES = {
-    "default": dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
-        conn_max_age=600,
-        ssl_require=True
-    )
-}
+DATABASE_URL = os.getenv("DATABASE_URL")
 
+if DATABASE_URL:
+    # 👉 Produção (Heroku)
+    DATABASES = {
+        "default": dj_database_url.parse(
+            DATABASE_URL,
+            conn_max_age=600,
+            ssl_require=True
+        )
+    }
+else:
+    # 👉 Docker / Local
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.getenv("SQL_DATABASE", "bookstore_dev_db"),
+            "USER": os.getenv("SQL_USER", "bookstore_dev"),
+            "PASSWORD": os.getenv("SQL_PASSWORD", "bookstore_dev"),
+            "HOST": os.getenv("SQL_HOST", "db"),  # 👈 chave aqui
+            "PORT": os.getenv("SQL_PORT", "5432"),
+        }
+    }
+    
+    
 # PASSWORDS
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},

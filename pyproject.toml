@@ -5,7 +5,7 @@ description = "Bookstore API"
 authors = ["larrirafa"]
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = ">=3.12,<4.0"
 Django = "^4.2"
 gunicorn = "^20.1.0"
 djangorestframework = "^3.14.0"
