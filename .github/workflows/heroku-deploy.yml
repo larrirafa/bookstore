@@ -6,38 +6,34 @@ on:
       - 'main'
 
 jobs:
-  heroku-container-deploy:
+  heroku-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
 
-      # Esta Action instala o Heroku CLI e faz o login automaticamente
-      - name: Login to Heroku
-        uses: akhileshns/heroku-deploy@v3.12.12
-        with:
-          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-          heroku_email: ${{ secrets.HEROKU_EMAIL }}
-          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
-          just_login: true # Só queremos o login, o resto faremos via Docker
+      - name: Install Heroku CLI
+        # Esse comando instala o Heroku no Ubuntu do GitHub
+        run: curl https://cli-assets.heroku.com/install.sh | sh
+
+      - name: Heroku Login & Container Login
+        # Agora que o Heroku existe, fazemos o login
+        run: |
+          echo ${{ secrets.HEROKU_API_KEY }} | docker login --username=_ --password-stdin registry.heroku.com
+          heroku container:login
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
 
       - name: Build and Push Container
+        # Usando os comandos que você já conhece
         run: |
-          # 1. Login no registro de container usando o Docker diretamente
-          echo ${{ secrets.HEROKU_API_KEY }} | docker login --username=_ --password-stdin registry.heroku.com
-          
-          # 2. Build da imagem
-          docker build -t registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web .
-          
-          # 3. Push para o Heroku
-          docker push registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web
-          
-          # 4. Release (Ativa a imagem)
+          heroku container:push web -a ${{ secrets.HEROKU_APP_NAME }}
           heroku container:release web -a ${{ secrets.HEROKU_APP_NAME }}
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
 
-      - name: Run Database Migrations
+      - name: Run Migrations
+        # Aproveitando que o CLI está instalado para rodar o migrate
         run: heroku run python manage.py migrate -a ${{ secrets.HEROKU_APP_NAME }}
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
